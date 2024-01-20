@@ -3,11 +3,11 @@
 MYSQL_EXECUTABLE="/Applications/XAMPP/xamppfiles/bin/mysql"
 
 # Prompt the user for action
-read -p "Do you want to (c)reate or (d)elete the 'PoliticalManagementDB' database? (c/d): " action
+read -p "Do you want to (c)reate, (d)elete, or (r)eset the 'PoliticalManagementDB' database? (c/d/r): " action
 
 if [ "$action" == "c" ]; then
   # MySQL script to create the 'PoliticalManagementDB' database
-  $MYSQL_EXECUTABLE -u root -p < cms-database.sql
+  $MYSQL_EXECUTABLE -u root -p < create-database.sql
 
   # Check if the database creation was successful
   if [ $? -eq 0 ]; then
@@ -29,7 +29,20 @@ elif [ "$action" == "d" ]; then
     exit 1
   fi
 
+elif [ "$action" == "r" ]; then
+  # MySQL script to reset the 'PoliticalManagementDB' database
+  $MYSQL_EXECUTABLE -u root -p < create-database.sql
+  $MYSQL_EXECUTABLE -u root -p < insert-database.sql
+
+  # Check if the database reset was successful
+  if [ $? -eq 0 ]; then
+    echo "Database PoliticalManagementDB reset successfully"
+  else
+    echo "Error resetting database PoliticalManagementDB"
+    exit 1
+  fi
+
 else
-  echo "Invalid option. Please enter 'c' for creation or 'd' for deletion."
+  echo "Invalid option. Please enter 'c' for creation, 'd' for deletion, or 'r' for reset."
   exit 1
 fi
